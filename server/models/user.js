@@ -18,6 +18,14 @@ const userSchema = new mongoose.Schema({
   salt: {
     type: String,
   },
+  phoneNumber: {
+    type: Number,
+    required: true,
+  },
+  deviceid: {
+    type: String,
+    required: true,
+  },
   role: {
     type: Number,
     default: 0,
