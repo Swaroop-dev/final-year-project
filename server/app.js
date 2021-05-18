@@ -1,18 +1,19 @@
 //required dependicies
-const mongoose=require("mongoose")
-const express=require("express")
-const bodyParser=require("body-parser")
-const  cors=require("cors")
-const cookieParser=require("cookie-parser")
-require('dotenv').config()
+const mongoose = require("mongoose");
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+require("dotenv").config();
 
 
+//routes
+const authRoutes = require("./routes/auth");
 
 //server and database
 
-const app=express()
-const port=process.env.PORT||8000
-
+const app = express();
+const port = process.env.PORT || 8000;
 
 mongoose
   .connect(process.env.DATABASE, {
@@ -27,11 +28,11 @@ mongoose
     console.log("..IS CONNECTING");
   });
 
-
- app.use(bodyParser.json());
- app.use(cors());
+app.use(bodyParser.json());
+app.use(cors());
 app.use(cookieParser());
- 
+
+app.use('/api',authRoutes)
 
 //server running
 app.listen(port, () => {

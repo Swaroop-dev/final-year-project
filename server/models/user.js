@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     maxlength: 32,
   },
   email: {
-    type: email,
+    type: String,
     required: true,
   },
   encry_password: {
@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
   role: {
     type: Number,
     default: 0,
+  },
+  contacts: {
+    type: Array,
+    default: [],
   },
 });
 

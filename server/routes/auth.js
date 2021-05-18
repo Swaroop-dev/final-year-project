@@ -3,29 +3,28 @@ var router = express.Router();
 const { check, validationResult } = require("express-validator");
 const { signout, signup, signin } = require("../controllers/auth");
 
+router.post(
+  "/signup",
+  [
+    check("phoneNumber", "phoneNumber is required").isMobilePhone(),
+    check("email", "email is required").isEmail(),
+    check("password", "password must be strong").isLength({ min: 4 }),
+    check("deviceid", "deviceid is required").isAlphanumeric(),
+  ],
 
-router.post('/signup',
-    [
-        check("phoneNumber", "phoneNumber is required").isMobilePhone(),
-        check("email", "email is required").isEmail(),
-        check("passowrd", "password must be strong").isLength({ min: 4 }),
-        check("deviceid", "deviceid is required").isAlphanumeric(),
-        
-    ],
+  signup
+);
 
-    signup
-)
+router.get("/signout", signout);
 
-router.get('/signout', signout)
+router.post(
+  "/signin",
 
-router.post('/signin',
-    
-    [
-        check("phoneNumber", "phoneNumber is required").isMobilePhone(),
-        check("passowrd","passowrd is required").isLength({min: 4})
-    ],
-    signin
+  [
+    check("phoneNumber", "phoneNumber is required").isMobilePhone(),
+    check("password", "passowrd is required").isLength({ min: 4 }),
+  ],
+  signin
+);
 
-)
-
-module.exports = router
+module.exports = router;
