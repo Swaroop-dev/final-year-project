@@ -50,9 +50,12 @@ exports.signin = (req, res) => {
     const token = jwt.sign({ _id: user._id }, process.env.SECRET);
     //put token in cookie
     res.cookie("token", token, { expire: new Date() + 9999 });
-    const { _id, name, email, role, phoneNumber } = user;
+    const { _id, name, email, role, phoneNumber, deviceid } = user;
 
-    return res.json({ token, user: { _id, name, email, role, phoneNumber } });
+    return res.json({
+      token,
+      user: { _id, name, email, role, phoneNumber, deviceid },
+    });
   });
 };
 
@@ -87,4 +90,42 @@ exports.isAdmin = (req, res, next) => {
     });
   }
   next();
+};
+
+exports.addContact = (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      error: errors.array()[0].msg,
+    });
+  }
+  const { confirmedPatient, suspectedContacts } = req.body;
+  const patients = [];
+  User.find({ deviceid: confirmedPatient }, (err, user) => {
+    if (err) {
+      return res.json({
+        error: "User not found",
+      });
+    }
+
+    for (i = 0; i < suspectedContacts.length; i++) {
+      User.find({ deviceid: suspectedContacts[i] }, (err, user1) => {
+        if (!err) {
+          const { deviceid, phoneNumber, name } = user1;
+          patients.push({ deviceid, phoneNumber, name });
+        }
+      });
+    }
+  });
+  User.findByIdAndUpdate(
+    { deviceid: confirmedPatient },
+    { $push: { $each: patients } },
+    (err, user2) => {
+      if (err) {
+        return res.json(err);
+      }
+      return res.json(patients);
+    }
+  );
 };

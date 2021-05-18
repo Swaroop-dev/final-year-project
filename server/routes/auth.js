@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const { check, validationResult } = require("express-validator");
-const { signout, signup, signin } = require("../controllers/auth");
+const { signout, signup, signin,addContact } = require("../controllers/auth");
 
 router.post(
   "/signup",
@@ -26,5 +26,12 @@ router.post(
   ],
   signin
 );
+
+router.post("/addContact",
+    [
+        check("confirmedPatient", "patient deviceid is required"),
+        check("suspectedContacts","suspected Contacts list required")
+    ],
+    addContact);
 
 module.exports = router;
