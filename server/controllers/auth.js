@@ -97,35 +97,54 @@ exports.addContact = (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
-      error: errors.array()[0].msg,
+      error: "missing attribute",
     });
   }
   const { confirmedPatient, suspectedContacts } = req.body;
-  const patients = [];
+
+  var patients = new Array();
+  const detail = {};
   User.find({ deviceid: confirmedPatient }, (err, user) => {
     if (err) {
       return res.json({
         error: "User not found",
       });
     }
-
-    for (i = 0; i < suspectedContacts.length; i++) {
-      User.find({ deviceid: suspectedContacts[i] }, (err, user1) => {
-        if (!err) {
-          const { deviceid, phoneNumber, name } = user1;
-          patients.push({ deviceid, phoneNumber, name });
-        }
-      });
-    }
+    // console.log(user)
   });
-  User.findByIdAndUpdate(
-    { deviceid: confirmedPatient },
-    { $push: { $each: patients } },
-    (err, user2) => {
+  for (i = 0; i < suspectedContacts.length; i++) {
+    User.find({ deviceid: suspectedContacts[i] }, (err, user1) => {
       if (err) {
-        return res.json(err);
+        return res.json({ eror: "could find device id attribute" });
       }
-      return res.json(patients);
+
+      const { deviceid, phoneNumber, name } = user1[0];
+      var obj = {
+        deviceid: deviceid,
+        phoneNumber: phoneNumber,
+        name: name,
+      };
+
+      patients.push(obj)
+      console.log(patients)
+      User.findOneAndUpdate(
+        { deviceid: confirmedPatient },
+        { $push: { contacts: obj } },
+        (err, user2) => {
+          if (err) {
+            return res.json({ error: "could not add attribute" });
+          }
+        }
+      );
+      
+    });
+  }
+  ;
+  User.find({ deviceid: confirmedPatient }, (err, user) => {
+    if (err) {
+      return res.json(err)
     }
-  );
+    return res.json(user)
+  })
+  
 };

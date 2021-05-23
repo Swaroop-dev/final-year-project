@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  isPrimaryContact: {
+    type: Boolean,
+  },
   contacts: {
     type: Array,
     default: [],
