@@ -124,9 +124,9 @@ exports.addContact = (req, res) => {
         phoneNumber: phoneNumber,
         name: name,
       };
-
-      patients.push(obj)
-      console.log(patients)
+      console.log(obj);
+      patients.push(obj);
+      console.log(patients);
       User.findOneAndUpdate(
         { deviceid: confirmedPatient },
         { $push: { contacts: obj } },
@@ -136,15 +136,12 @@ exports.addContact = (req, res) => {
           }
         }
       );
-      
     });
   }
-  ;
   User.find({ deviceid: confirmedPatient }, (err, user) => {
     if (err) {
-      return res.json(err)
+      return res.json(err);
     }
-    return res.json(user)
-  })
-  
+    return res.json(user);
+  });
 };
