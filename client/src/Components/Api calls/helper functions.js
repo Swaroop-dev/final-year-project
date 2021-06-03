@@ -31,3 +31,15 @@ export const signin = (user) => {
     })
     .catch((err) => console.log(err));
 };
+
+export const addContacts = (data) => {
+  console.log(data)
+  return fetch("http://localhost:8000/api/addContact", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body:data,
+  });
+}
