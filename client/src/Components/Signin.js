@@ -1,9 +1,7 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 
 import { signin } from "./Api calls/helper functions";
-
-
 
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -11,7 +9,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
@@ -23,7 +21,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      
+
       {new Date().getFullYear()}
       {"."}
     </Typography>
@@ -75,63 +73,57 @@ export default function Signin() {
   });
   const { phoneNumber, password, error, loading, didRedirect, role } = values;
 
-    const handleChange = (name) => (event) => {
-      setValues({ ...values, error: false, [name]: event.target.value });
-    };
+  const handleChange = (name) => (event) => {
+    setValues({ ...values, error: false, [name]: event.target.value });
+  };
 
-    const performRedirect = () => {
-      if (didRedirect) {
-        if (role === 1) {
-          return <Redirect to="/addContacts" />;
-        } else {
-          return <Redirect to="/" />;
-        }
+  const performRedirect = () => {
+    if (didRedirect) {
+      if (role === 1) {
+        return <Redirect to="/addContacts" />;
+      } else {
+        return <Redirect to="/" />;
       }
-    };
-    const onSubmit = (event) => {
-      event.preventDefault();
-      setValues({ ...values, error: false, loading: true });
-      signin({ phoneNumber, password })
-        .then((data) => {
-          console.log(data);
-          if (data?.error) {
-            setValues({ ...values, error: data?.error, loading: false });
-          } else {
-            setValues({
-              ...values,
-              role: data.user.role,
-              didRedirect: true,
-            });
-              console.log(data.user.role)
-          }
-        })
-        .catch(() => console.log("signin request failed"));
-    };
+    }
+  };
+  const onSubmit = (event) => {
+    event.preventDefault();
+    setValues({ ...values, error: false, loading: true });
+    signin({ phoneNumber, password })
+      .then((data) => {
+        console.log(data);
+        if (data?.error) {
+          setValues({ ...values, error: data?.error, loading: false });
+        } else {
+          setValues({
+            ...values,
+            role: data.user.role,
+            didRedirect: true,
+          });
+          console.log(data.user.role);
+        }
+      })
+      .catch(() => console.log("signin request failed"));
+  };
 
-    const loadingMessage = () => {
-      return (
-        loading && (
-          <div className="alert alert-info">
-            <h2>Loading...</h2>
-          </div>
-        )
-      );
-    };
+  const loadingMessage = () => {
+    return loading && <CircularProgress />;
+  };
 
-    const errorMessage = () => {
-      return (
-        <div className="row">
-          <div className="col-md-6 offset-sm-3 text-left">
-            <div
-              className="alert alert-danger"
-              style={{ display: error ? "" : "none" }}
-            >
-              {error}
-            </div>
+  const errorMessage = () => {
+    return (
+      <div className="row">
+        <div className="col-md-6 offset-sm-3 text-left">
+          <div
+            className="alert alert-danger"
+            style={{ display: error ? "" : "none" }}
+          >
+            {error}
           </div>
         </div>
-      );
-    };
+      </div>
+    );
+  };
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -203,7 +195,7 @@ export default function Signin() {
             </Box>
           </form>
         </div>
-        { performRedirect()}
+        {performRedirect()}
       </Grid>
     </Grid>
   );
