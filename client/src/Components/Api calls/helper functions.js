@@ -40,6 +40,11 @@ export const addContacts = (data) => {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body:data,
-  });
+    body: data,
+  })
+    .then((response) => {
+      console.log(response);
+      return response.json();
+    })
+    .catch((err) => console.log(err));
 }
